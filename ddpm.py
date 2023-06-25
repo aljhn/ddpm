@@ -19,21 +19,6 @@ torch.manual_seed(seed)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-batch_size = 64
-image_size = 28
-steps = 1000
-beta_min = 1e-4
-beta_max = 0.02
-
-epochs = 10
-lr = 2e-4
-
-
-transform = Compose([ToTensor(), Lambda(lambda x: (x - 0.5) * 2)])
-
-dataset = MNIST("./datasets", download=True, train=True, transform=transform)
-loader = DataLoader(dataset, batch_size, shuffle=True)
-
 
 def show_images(images, title=""):
     images = images.detach().cpu().numpy()
@@ -326,13 +311,32 @@ class UNet(nn.Module):
 
 
 if __name__ == "__main__":
-    model = UNet(100, 10, 8, 100)
+    batch_size = 64
+    image_size = 28
+    steps = 1000
+    beta_min = 1e-4
+    beta_max = 0.02
+
+    epochs = 10
+    lr = 2e-4
+
+    hidden_channels = 100
+    groups = 10
+    attention_heads = 8
+    time_embedding_dimension = 100
+
+    transform = Compose([ToTensor(), Lambda(lambda x: (x - 0.5) * 2)])
+
+    dataset = MNIST("./datasets", download=True, train=True, transform=transform)
+    loader = DataLoader(dataset, batch_size, shuffle=True)
+
+    model = UNet(hidden_channels, groups, attention_heads, time_embedding_dimension)
     model.to(device)
 
     ddpm = DDPM(model, image_size, steps, beta_min, beta_max)
 
-    samples = ddpm.sample(16)
-    show_images(samples)
+    # samples = ddpm.sample(16)
+    # show_images(samples)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
