@@ -9,23 +9,28 @@ The forward process used to generate training data is done by starting with an i
 
 Algorithm 1 and 2 from the paper are implemented in the DDPM class.
 
-<img src="Images/DDPM_algorithms.png" height="200">
+<div align="center">
+    <img src="Images/DDPM_algorithms.png" height="200">
+</div>
 
 The model used to learn the added noise is a fully convolutional U-Net based on a series of downsampling and upsampling layers with residual blocks at each resolution.
 Multi-headed self attention is also added at certain steps, and the time-dependency is added to each residual block using a sinusoidal positional embedding.
 
 ## Training
 
-Before any training, sampling from the model leads to images mostly looking like random noise:
-
-<img src="Images/DDPM_random_samples.png" height="200">
-
-<img src="Images/MNIST.png" height="300">
+<div align="center">
+    <img src="Images/MNIST.png" height="500">
+</div>
 
 The model is then trained on the MNIST training dataset for 10 epochs leading to the following loss curve:
 
-<img src="Images/DDPM_loss.png" height="200">
+<div align="center">
+    <img src="Images/DDPM_loss.png" height="300">
+</div>
 
-After training, samples from the model is starting to resemble the images in the MNIST dataset.
+Before any training, sampling from the model leads to images mostly looking like random noise. After training, samples from the model is starting to resemble the images in the MNIST dataset.
 
-<img src="Images/DDPM_generated_samples.png" height="200">
+<div align="center">
+    <img src="Images/DDPM_random_samples.png" height="300">
+    <img src="Images/DDPM_generated_samples.png" height="300">
+</div>
