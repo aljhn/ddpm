@@ -37,6 +37,10 @@ def show_images(images, title=""):
 
 
 class DDPM:
+    """
+    Denoising Diffusion Probabilistic Model. Class contains methods for sampling and training from a diffusion model.
+    """
+
     def __init__(self, model, image_size, steps, beta_min, beta_max):
         self.model = model
         self.image_size = image_size
@@ -47,6 +51,9 @@ class DDPM:
         self.sigma = self.beta**0.5
 
     def p_sample(self, x_t, t, z, epsilon):
+        """
+        Sample from the reverse process. Removes noise from the processed image.
+        """
         return (
             1.0
             / ((self.alpha[t]) ** 0.5)
@@ -55,6 +62,9 @@ class DDPM:
         )
 
     def sample(self, batch_size):
+        """
+        Sample a batch of images using the diffusion model.
+        """
         x_t = torch.randn(
             (batch_size, 1, self.image_size, self.image_size), device=device
         )
@@ -70,11 +80,17 @@ class DDPM:
         return x_t
 
     def q_sample(self, x_0, t, epsilon):
+        """
+        Sample from the forward process. Adds gaussian noise to an initial data point.
+        """
         return (self.alpha_bar[t] ** 0.5) * x_0 + (
             (1 - self.alpha_bar[t]) ** 0.5
         ) * epsilon
 
     def train(self, x_0):
+        """
+        Performs one training iteration for the diffusion model. Takes in a batch of images to train on.
+        """
         batch_size = x_0.shape[0]
         t = torch.randint(1, self.steps, size=(batch_size, 1), device=device)
         epsilon = torch.randn(
@@ -88,6 +104,11 @@ class DDPM:
 
 
 class PositionalEmbedding(nn.Module):
+    """
+    Sinusoidal positional embedding from the attention paper.
+    Used for embedding the time input to the network.
+    """
+
     def __init__(self, dimension):
         super().__init__()
         self.dimension = dimension
@@ -102,6 +123,10 @@ class PositionalEmbedding(nn.Module):
 
 
 class SelfAttentionBlock(nn.Module):
+    """
+    Multi-Headed Self Attention modified with 2D convolutions instead of linear layers.
+    """
+
     def __init__(self, dimension, heads, hidden_dimension, groups):
         super().__init__()
         self.dimension = dimension
@@ -134,6 +159,9 @@ class SelfAttentionBlock(nn.Module):
         k = self.layer_k(x)
         v = self.layer_v(x)
 
+        # Permute and reshape he tensors so that the matrix multiplications work out correctly.
+        # For q and v, the channel dimension is moved last.
+        # All three tensors are also flattened along the height and width dimensions, thus making each of them a batch of matrices.
         q = q.permute(0, 2, 3, 1).reshape(
             batch_size, height * width, self.heads * self.hidden_dimension
         )
@@ -142,18 +170,28 @@ class SelfAttentionBlock(nn.Module):
             batch_size, height * width, self.heads * self.hidden_dimension
         )
 
-        qk = torch.bmm(q, k)
+        qk = torch.bmm(
+            q, k
+        )  # Batched matrix multiplication. The channel dimensions for both q and k are multiplied together.
+        # This means that the attention scores are comparing the similarity of pixel positions, instead of channel positions.
         qk = self.softmax(qk / (self.hidden_dimension**0.5))
         attention = torch.bmm(qk, v)
         attention = attention.reshape(
             batch_size, height, width, self.heads * self.hidden_dimension
-        ).permute(0, 3, 1, 2)
+        ).permute(
+            0, 3, 1, 2
+        )  # Move the channel dimension back to the second dimension as is the convention.
 
-        out = self.layer_out(attention)
+        out = self.layer_out(attention)  # Do one final layer after the self attention.
         return x + out
 
 
 class ResidualBlock(nn.Module):
+    """
+    Fully convolutional residual block using the SiLU activation function and group normalization layers, inspired by the original paper.
+    The time embedding t is sent through linear layers to make the shape fit with the input image x.
+    """
+
     def __init__(self, channels, groups, time_embedding_dimension, image_size):
         super().__init__()
         self.layer1 = nn.Conv2d(channels, channels, kernel_size=3, stride=1, padding=1)
@@ -188,6 +226,14 @@ class ResidualBlock(nn.Module):
 
 
 class UNet(nn.Module):
+    """
+    Network used for learning the reverse diffusion process.
+    Consists of a U-Net style architecture based on fully convolutional residual blocks together with a series of downsampling and upsampling operations.
+    The same number of downsamples and upsamples are used, and the state at each step during the downsampling is concatenated to the corresponding step in the upsampling.
+    The time t is send through a sinusoidal positional embedding, and added as an input to each residual block.
+    Multi-Headed Self Attention blocks working on the image state is added at the middle positions of each stage.
+    """
+
     def __init__(
         self, hidden_channels, groups, attention_heads, time_embedding_dimension
     ):
