@@ -22,13 +22,7 @@ Multi-headed self attention is also added at certain steps, and the time-depende
     <img src="Images/MNIST.png" height="500">
 </div>
 
-The model is then trained on the MNIST training dataset for 10 epochs leading to the following loss curve:
-
-<div align="center">
-    <img src="Images/DDPM_loss.png" height="300">
-</div>
-
-Before any training, sampling from the model leads to images mostly looking like random noise. After training, samples from the model is starting to resemble the images in the MNIST dataset.
+Before any training, sampling from the model leads to images mostly looking like random noise. After training the model on the MNIST training dataset for 10 epochs, samples start to resemble the images from the training.
 
 <div align="center">
     <img src="Images/DDPM_random_samples.png" height="300">

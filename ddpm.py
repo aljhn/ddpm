@@ -158,7 +158,8 @@ class ResidualBlock(nn.Module):
         super().__init__()
         self.layer1 = nn.Conv2d(channels, channels, kernel_size=3, stride=1, padding=1)
         self.layer2 = nn.Conv2d(channels, channels, kernel_size=3, stride=1, padding=1)
-        self.layer_t = nn.Linear(
+        self.layer_t1 = nn.Linear(time_embedding_dimension, time_embedding_dimension)
+        self.layer_t2 = nn.Linear(
             time_embedding_dimension, channels * image_size * image_size
         )
         self.activation = nn.SiLU()
@@ -172,8 +173,9 @@ class ResidualBlock(nn.Module):
         x = self.layer1(x)
         x = self.activation(x)
 
-        t = self.layer_t(t)
+        t = self.layer_t1(t)
         t = self.activation(t)
+        t = self.layer_t2(t)
         t = t.reshape(x.shape)
 
         x += t
@@ -191,7 +193,8 @@ class UNet(nn.Module):
     ):
         super().__init__()
         self.positional_embedding = PositionalEmbedding(time_embedding_dimension)
-        self.layer_t = nn.Linear(time_embedding_dimension, time_embedding_dimension)
+        self.layer_t1 = nn.Linear(time_embedding_dimension, time_embedding_dimension)
+        self.layer_t2 = nn.Linear(time_embedding_dimension, time_embedding_dimension)
 
         self.layer_down1 = nn.Conv2d(
             1, hidden_channels, kernel_size=3, stride=1, padding=1
@@ -265,8 +268,9 @@ class UNet(nn.Module):
 
     def forward(self, x, t):
         t_embed = self.positional_embedding(t)
-        t_embed = self.layer_t(t_embed)
+        t_embed = self.layer_t1(t_embed)
         t_embed = self.activation(t_embed)
+        t_embed = self.layer_t2(t_embed)
 
         x1 = self.layer_down1(x)
         x1 = self.activation(x1)
@@ -345,13 +349,18 @@ if __name__ == "__main__":
 
     pbar = tqdm(range(1, epochs + 1))
     for epoch in pbar:
-        for x_batch, y_batch in loader:
+        for iteration, (x_batch, y_batch) in enumerate(loader):
             optimizer.zero_grad()
             x_batch = x_batch.to(device)
             loss = ddpm.train(x_batch)
             loss.backward()
             optimizer.step()
-            pbar.set_postfix({"Loss": loss.item()})
+            pbar.set_postfix(
+                {
+                    "Loss": loss.item(),
+                    "Iteration": f"{iteration} / {60000 // batch_size}",
+                }
+            )
             losses.append(loss.item())
         scheduler.step()
 
