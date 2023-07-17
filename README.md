@@ -36,4 +36,21 @@ Before any training, sampling from the model leads to images mostly looking like
 
 Classifier-Free Diffusion Guidance implementation based on the paper by [Ho & Salimans \[2022\]](https://arxiv.org/abs/2207.12598).
 
-
+<div align="center">
+    <table>
+        <tr>
+            <td><img src="Images/CDDPM_0.png", height=200></td>
+            <td><img src="Images/CDDPM_1.png", height=200></td>
+            <td><img src="Images/CDDPM_2.png", height=200></td>
+            <td><img src="Images/CDDPM_3.png", height=200></td>
+            <td><img src="Images/CDDPM_4.png", height=200></td>
+        </tr>
+        <tr>
+            <td><img src="Images/CDDPM_5.png", height=200></td>
+            <td><img src="Images/CDDPM_6.png", height=200></td>
+            <td><img src="Images/CDDPM_7.png", height=200></td>
+            <td><img src="Images/CDDPM_8.png", height=200></td>
+            <td><img src="Images/CDDPM_9.png", height=200></td>
+        </tr>
+    </table>
+</div>
