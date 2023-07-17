@@ -136,7 +136,7 @@ class ConditionalDDPM:
 
 class PositionalEmbedding(nn.Module):
     """
-    Sinusoidal positional embedding from the attention paper.
+    Sinusoidal positional embedding based on the definition from the original attention paper.
     Used for embedding the time input to the network.
     """
 
@@ -206,8 +206,8 @@ class SelfAttentionBlock(nn.Module):
         qk = torch.bmm(q, k)
         qk = self.softmax(qk / (self.hidden_dimension**0.5))
         attention = torch.bmm(qk, v)
-        # Move the channel dimension back to the second dimension as is the convention.
 
+        # Move the channel dimension back to the second dimension as is the convention.
         attention = attention.reshape(
             batch_size, height, width, self.heads * self.hidden_dimension
         ).permute(0, 3, 1, 2)
@@ -218,7 +218,7 @@ class SelfAttentionBlock(nn.Module):
 
 class ResidualBlock(nn.Module):
     """
-    Fully convolutional residual block using the SiLU activation function and group normalization layers, inspired by the original paper.
+    Fully convolutional residual block using the SiLU activation function and group normalization layers.
     The time embedding t and class label c is sent through linear layers to make the shape fit with the input image x.
     """
 

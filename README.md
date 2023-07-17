@@ -18,6 +18,8 @@ Multi-headed self attention is also added at certain steps, and the time-depende
 
 ## Training
 
+Example batch from the MNIST training dataset.
+
 <div align="center">
     <img src="Images/MNIST.png" height="500">
 </div>
@@ -28,3 +30,10 @@ Before any training, sampling from the model leads to images mostly looking like
     <img src="Images/DDPM_random_samples.png" height="300">
     <img src="Images/DDPM_generated_samples.png" height="300">
 </div>
+
+
+## Conditional DDPM
+
+Classifier-Free Diffusion Guidance implementation based on the paper by [Ho & Salimans \[2022\]](https://arxiv.org/abs/2207.12598).
+
+
