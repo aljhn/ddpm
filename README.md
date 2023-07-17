@@ -36,6 +36,10 @@ Before any training, sampling from the model leads to images mostly looking like
 
 Classifier-Free Diffusion Guidance implementation based on the paper by [Ho & Salimans \[2022\]](https://arxiv.org/abs/2207.12598).
 
+Adds class conditioning to the original DDPM version. Makes it possible to choose a class and generate images from that given class.
+This is done by adding the class context to the residual blocks of the U-Net for a guided prediction step.
+The final noise predictions at each step is computed as a weighted sum between a guided and unguided prediction for sampling images.
+
 <div align="center">
     <table>
         <tr>
