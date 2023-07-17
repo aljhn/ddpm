@@ -45,18 +45,18 @@ Example images from each class are shown in the table below after training.
 <div align="center">
     <table>
         <tr>
-            <td><img src="Images/CDDPM_0.png", height=100></td>
-            <td><img src="Images/CDDPM_1.png", height=100></td>
-            <td><img src="Images/CDDPM_2.png", height=100></td>
-            <td><img src="Images/CDDPM_3.png", height=100></td>
-            <td><img src="Images/CDDPM_4.png", height=100></td>
+            <td><img src="Images/CDDPM_0.png", height=150></td>
+            <td><img src="Images/CDDPM_1.png", height=150></td>
+            <td><img src="Images/CDDPM_2.png", height=150></td>
+            <td><img src="Images/CDDPM_3.png", height=150></td>
+            <td><img src="Images/CDDPM_4.png", height=150></td>
         </tr>
         <tr>
-            <td><img src="Images/CDDPM_5.png", height=100></td>
-            <td><img src="Images/CDDPM_6.png", height=100></td>
-            <td><img src="Images/CDDPM_7.png", height=100></td>
-            <td><img src="Images/CDDPM_8.png", height=100></td>
-            <td><img src="Images/CDDPM_9.png", height=100></td>
+            <td><img src="Images/CDDPM_5.png", height=150></td>
+            <td><img src="Images/CDDPM_6.png", height=150></td>
+            <td><img src="Images/CDDPM_7.png", height=150></td>
+            <td><img src="Images/CDDPM_8.png", height=150></td>
+            <td><img src="Images/CDDPM_9.png", height=150></td>
         </tr>
     </table>
 </div>
