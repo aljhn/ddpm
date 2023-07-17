@@ -46,7 +46,7 @@ Example images from each class are shown in the table below after training.
     <table>
         <tr>
             <td><img src="Images/CDDPM_0.png", height=100></td>
-            <td><img src="Images/CDDPM_1.png", height=200></td>
+            <td><img src="Images/CDDPM_1.png", height=100></td>
             <td><img src="Images/CDDPM_2.png", height=100></td>
             <td><img src="Images/CDDPM_3.png", height=100></td>
             <td><img src="Images/CDDPM_4.png", height=100></td>
